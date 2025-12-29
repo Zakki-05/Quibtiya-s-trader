@@ -2,7 +2,8 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import Link from 'next/link';
-import { Package, FileText, Users, LayoutDashboard, LogOut } from 'lucide-react';
+import { Package, FileText, Users, LayoutDashboard } from 'lucide-react';
+import { SignOutButton } from "@/components/SignOutButton";
 
 export default async function ProtectedLayout({
     children,
@@ -47,10 +48,7 @@ export default async function ProtectedLayout({
                 </nav>
 
                 <div className="p-4 border-t border-white/5">
-                    <button className="flex items-center space-x-3 px-4 py-3 text-sm font-medium text-gray-400 hover:text-white transition-colors w-full">
-                        <LogOut className="w-4 h-4" />
-                        <span>Sign Out</span>
-                    </button>
+                    <SignOutButton />
                 </div>
             </aside>
 
