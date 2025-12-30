@@ -1,8 +1,8 @@
 import { getProducts, getCategories } from '@/lib/products';
 import Link from 'next/link';
 
-export default async function CategoryPage({ params }: { params: { category: string } }) {
-    const { category: categorySlug } = params;
+export default async function CategoryPage({ params }: { params: Promise<{ category: string }> }) {
+    const { category: categorySlug } = await params;
     const products = await getProducts({ category: categorySlug });
     const categories = await getCategories();
     const currentCategory = categories.find(c => c.slug === categorySlug);

@@ -4,8 +4,9 @@ import { ChevronRight, MessageCircle, ShieldCheck, Truck, RefreshCw } from 'luci
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-    const product = await getProductBySlug(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
+    const product = await getProductBySlug(slug);
     if (!product) return { title: 'Product Not Found' };
 
     return {
@@ -19,8 +20,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     };
 }
 
-export default async function ProductDetailPage({ params }: { params: { category: string, slug: string } }) {
-    const product = await getProductBySlug(params.slug);
+export default async function ProductDetailPage({ params }: { params: Promise<{ category: string, slug: string }> }) {
+    const { category, slug } = await params;
+    const product = await getProductBySlug(slug);
 
     if (!product) {
         notFound();
@@ -56,7 +58,7 @@ export default async function ProductDetailPage({ params }: { params: { category
                         <ChevronRight className="w-3 h-3" />
                         <Link href="/products" className="hover:text-gold">Products</Link>
                         <ChevronRight className="w-3 h-3" />
-                        <Link href={`/products/${params.category}`} className="hover:text-gold">{product.category.name}</Link>
+                        <Link href={`/products/${category}`} className="hover:text-gold">{product.category.name}</Link>
                         <ChevronRight className="w-3 h-3" />
                         <span className="text-navy">{product.name}</span>
                     </nav>

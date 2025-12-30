@@ -1,16 +1,30 @@
 'use client';
 
-import { Plus, Building2, MapPin, Trash2, Edit, Search, Filter, Users } from 'lucide-react';
+import { Plus, Building2, MapPin, Trash2, Edit, Search, X, Users } from 'lucide-react';
 import { useState } from 'react';
+import { createTrader, updateTrader, deleteTrader } from '@/lib/actions';
 
 export function AdminTradersList({ traders }: { traders: any[] }) {
     const [searchTerm, setSearchTerm] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [currentTrader, setCurrentTrader] = useState<any>(null);
 
-    const handleAddTrader = () => alert("Add Trader form functionality would trigger here");
-    const handleEditTrader = (id: string) => alert(`Edit Trader ${id}`);
-    const handleDeleteTrader = (id: string) => {
+    const handleAddClick = () => {
+        setIsEditing(false);
+        setCurrentTrader(null);
+        setIsModalOpen(true);
+    };
+
+    const handleEditClick = (trader: any) => {
+        setIsEditing(true);
+        setCurrentTrader(trader);
+        setIsModalOpen(true);
+    };
+
+    const handleDeleteClick = async (id: string) => {
         if (confirm("Are you sure you want to delete this trader?")) {
-            alert(`Delete Trader ${id}`);
+            await deleteTrader(id);
         }
     };
 
@@ -21,13 +35,13 @@ export function AdminTradersList({ traders }: { traders: any[] }) {
 
     return (
         <div className="space-y-8 md:space-y-12 pb-24">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end space-y-4 md:space-y-0">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end space-y-4 md:space-y-0 text-navy">
                 <div className="space-y-2">
-                    <h1 className="text-2xl md:text-3xl font-bold text-navy uppercase tracking-tight">Trader Management</h1>
+                    <h1 className="text-2xl md:text-3xl font-bold uppercase tracking-tight">Trader Management</h1>
                     <p className="text-sm text-gray-400">Manage your verified business partners and distributors.</p>
                 </div>
                 <button
-                    onClick={handleAddTrader}
+                    onClick={handleAddClick}
                     className="w-full md:w-auto bg-navy text-white px-8 py-4 text-xs font-bold uppercase tracking-widest flex items-center justify-center space-x-2 hover:bg-gold transition-all shadow-lg"
                 >
                     <Plus className="w-4 h-4" />
@@ -35,8 +49,8 @@ export function AdminTradersList({ traders }: { traders: any[] }) {
                 </button>
             </div>
 
-            <div className="bg-white border border-gray-100 shadow-sm overflow-hidden">
-                <div className="p-4 md:p-6 border-b border-gray-50 flex flex-col md:flex-row md:items-center justify-between space-y-4 md:space-y-0">
+            <div className="bg-white border border-gray-100 shadow-sm overflow-hidden text-navy">
+                <div className="p-4 md:p-6 border-b border-gray-50 flex flex-col md:flex-row md:items-center justify-between space-y-4 md:space-y-0 bg-white">
                     <div className="relative max-w-md w-full">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
                         <input
@@ -47,11 +61,6 @@ export function AdminTradersList({ traders }: { traders: any[] }) {
                             className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-transparent focus:border-gold/30 focus:bg-white outline-none text-xs transition-all"
                         />
                     </div>
-                    <div className="flex items-center space-x-2">
-                        <button className="p-3 text-navy/40 hover:text-navy hover:bg-gray-50 transition-all rounded-sm">
-                            <Filter className="w-4 h-4" />
-                        </button>
-                    </div>
                 </div>
 
                 <div className="overflow-x-auto">
@@ -59,7 +68,7 @@ export function AdminTradersList({ traders }: { traders: any[] }) {
                         <thead>
                             <tr className="bg-gray-50/50 text-[10px] font-black uppercase tracking-widest text-navy border-b border-gray-100">
                                 <th className="px-8 py-5">Trader / Business</th>
-                                <th className="px-8 py-5">Contact</th>
+                                <th className="px-8 py-5">Contact Info</th>
                                 <th className="px-8 py-5">Location</th>
                                 <th className="px-8 py-5">Performance</th>
                                 <th className="px-8 py-5 text-right">Actions</th>
@@ -92,12 +101,15 @@ export function AdminTradersList({ traders }: { traders: any[] }) {
                                             </div>
                                         </td>
                                         <td className="px-8 py-6">
-                                            <div className="text-[10px] font-bold text-navy tracking-wider">{trader.email || 'NO EMAIL REGISTERED'}</div>
+                                            <div className="space-y-1">
+                                                <div className="text-[10px] font-bold text-navy tracking-wider">{trader.email || 'NO EMAIL'}</div>
+                                                <div className="text-[10px] font-medium text-gray-400">{trader.contact}</div>
+                                            </div>
                                         </td>
                                         <td className="px-8 py-6">
                                             <div className="flex items-center space-x-2 text-[10px] font-bold text-gray-500 uppercase tracking-tight">
                                                 <MapPin className="w-3 h-3 text-gold" />
-                                                <span>{trader.address || 'India (Pan India Supply)'}</span>
+                                                <span>{trader.address || 'India'}</span>
                                             </div>
                                         </td>
                                         <td className="px-8 py-6">
@@ -106,16 +118,14 @@ export function AdminTradersList({ traders }: { traders: any[] }) {
                                         <td className="px-8 py-6 text-right">
                                             <div className="flex justify-end items-center space-x-3">
                                                 <button
-                                                    onClick={() => handleEditTrader(trader.id)}
+                                                    onClick={() => handleEditClick(trader)}
                                                     className="p-2 text-gray-300 hover:text-navy hover:bg-gray-50 transition-all rounded-sm"
-                                                    title="Edit Trader"
                                                 >
                                                     <Edit className="w-4 h-4" />
                                                 </button>
                                                 <button
-                                                    onClick={() => handleDeleteTrader(trader.id)}
+                                                    onClick={() => handleDeleteClick(trader.id)}
                                                     className="p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 transition-all rounded-sm"
-                                                    title="Delete Trader"
                                                 >
                                                     <Trash2 className="w-4 h-4" />
                                                 </button>
@@ -127,11 +137,91 @@ export function AdminTradersList({ traders }: { traders: any[] }) {
                         </tbody>
                     </table>
                 </div>
-                <div className="p-4 bg-gray-50 border-t border-gray-100 flex justify-between items-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                    <span>Showing {filteredTraders.length} of {traders.length} Partners</span>
-                    <span>Last updated: Just now</span>
-                </div>
             </div>
+
+            {/* Modal */}
+            {isModalOpen && (
+                <div className="fixed inset-0 bg-navy/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+                    <div className="bg-white max-w-xl w-full shadow-2xl relative overflow-hidden">
+                        <div className="bg-navy p-6 flex justify-between items-center text-white">
+                            <h2 className="font-black uppercase tracking-widest">{isEditing ? 'Edit Trader' : 'Register New Trader'}</h2>
+                            <button onClick={() => setIsModalOpen(false)} className="text-white/50 hover:text-white transition-colors">
+                                <X className="w-6 h-6" />
+                            </button>
+                        </div>
+                        <form action={async (formData) => {
+                            if (isEditing) {
+                                await updateTrader(currentTrader.id, formData);
+                            } else {
+                                await createTrader(formData);
+                            }
+                            setIsModalOpen(false);
+                        }} className="p-8 space-y-6">
+                            <div className="space-y-2 text-navy">
+                                <label className="text-[10px] font-black uppercase tracking-widest">Business / Firm Name</label>
+                                <input
+                                    name="business"
+                                    required
+                                    defaultValue={currentTrader?.business}
+                                    className="w-full p-4 bg-gray-50 border border-transparent focus:border-gold/30 focus:bg-white outline-none text-xs"
+                                    placeholder="e.g. Agarwal Enterprises"
+                                />
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-navy">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest">Contact Person</label>
+                                    <input
+                                        name="name"
+                                        required
+                                        defaultValue={currentTrader?.name}
+                                        className="w-full p-4 bg-gray-50 border border-transparent focus:border-gold/30 focus:bg-white outline-none text-xs"
+                                        placeholder="Full Name"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest">Phone Number</label>
+                                    <input
+                                        name="contact"
+                                        required
+                                        defaultValue={currentTrader?.contact}
+                                        className="w-full p-4 bg-gray-50 border border-transparent focus:border-gold/30 focus:bg-white outline-none text-xs"
+                                        placeholder="+91 XXXXX XXXXX"
+                                    />
+                                </div>
+                                <div className="space-y-2 md:col-span-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest">Email Address</label>
+                                    <input
+                                        name="email"
+                                        type="email"
+                                        defaultValue={currentTrader?.email}
+                                        className="w-full p-4 bg-gray-50 border border-transparent focus:border-gold/30 focus:bg-white outline-none text-xs"
+                                        placeholder="email@example.com"
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-2 text-navy">
+                                <label className="text-[10px] font-black uppercase tracking-widest">Business Address</label>
+                                <textarea
+                                    name="address"
+                                    required
+                                    defaultValue={currentTrader?.address}
+                                    rows={3}
+                                    className="w-full p-4 bg-gray-50 border border-transparent focus:border-gold/30 focus:bg-white outline-none text-xs resize-none"
+                                    placeholder="Complete Office/Warehouse Address..."
+                                />
+                            </div>
+                            <div className="pt-6">
+                                <button
+                                    type="submit"
+                                    className="w-full bg-navy text-white py-5 text-xs font-black uppercase tracking-[0.2em] hover:bg-gold transition-all shadow-xl"
+                                >
+                                    {isEditing ? 'Save Changes' : 'Register Partner'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

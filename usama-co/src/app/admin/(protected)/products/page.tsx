@@ -7,5 +7,7 @@ export default async function AdminProductsPage() {
         orderBy: { createdAt: 'desc' }
     });
 
-    return <AdminProductsList products={products} />;
+    const categories = await prisma.category.findMany();
+
+    return <AdminProductsList products={products} categories={categories} />;
 }

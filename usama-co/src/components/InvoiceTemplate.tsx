@@ -13,14 +13,14 @@ interface InvoiceItem {
 
 interface InvoiceData {
     invoiceNumber: string;
-    date: Date;
+    date: Date | string;
     customerName: string;
     customerAddress: string;
     customerContact: string;
     placeOfSupply: string;
     gstin: string;
     items: InvoiceItem[];
-    bankDetails: {
+    bankDetails?: {
         name: string;
         accountNo: string;
         ifsc: string;
@@ -35,7 +35,15 @@ export const InvoiceTemplate = React.forwardRef<HTMLDivElement, { data: InvoiceD
     const total = subtotal + igst;
 
     return (
-        <div ref={ref} className="bg-white p-[1in] w-[8.27in] min-h-[11.69in] mx-auto text-navy shadow-lg print:shadow-none print:m-0">
+        <div
+            ref={ref}
+            className="bg-white p-[0.75in] w-[8.27in] min-h-[11.69in] mx-auto text-navy shadow-lg print:shadow-none print:m-0 print:p-[0.5in] overflow-hidden"
+            style={{
+                width: '210mm',
+                minHeight: '297mm',
+                boxSizing: 'border-box'
+            }}
+        >
             {/* Header */}
             <div className="flex justify-between items-start border-b-2 border-navy pb-8 mb-8">
                 <div className="space-y-2">
@@ -51,7 +59,7 @@ export const InvoiceTemplate = React.forwardRef<HTMLDivElement, { data: InvoiceD
                     <h2 className="text-2xl font-bold uppercase tracking-widest italic text-gold">Tax Invoice</h2>
                     <div className="text-[10px] font-bold uppercase tracking-wider space-y-1">
                         <p><span className="text-gray-400">Invoice No:</span> {data.invoiceNumber}</p>
-                        <p><span className="text-gray-400">Date:</span> {format(data.date, 'dd-MMM-yyyy')}</p>
+                        <p><span className="text-gray-400">Date:</span> {format(new Date(data.date), 'dd-MMM-yyyy')}</p>
                     </div>
                 </div>
             </div>
@@ -134,10 +142,10 @@ export const InvoiceTemplate = React.forwardRef<HTMLDivElement, { data: InvoiceD
                 <div className="space-y-4">
                     <h4 className="text-[9px] font-black uppercase tracking-widest text-gold">Bank Details</h4>
                     <div className="text-[9px] font-bold space-y-1 text-gray-500 uppercase">
-                        <p>Bank: <span className="text-navy">{data.bankDetails.name}</span></p>
-                        <p>A/C No: <span className="text-navy">{data.bankDetails.accountNo}</span></p>
-                        <p>IFSC: <span className="text-navy">{data.bankDetails.ifsc}</span></p>
-                        <p>Branch: <span className="text-navy">{data.bankDetails.branch}</span></p>
+                        <p>Bank: <span className="text-navy">{data.bankDetails?.name || 'USAMA TRADERS BANK'}</span></p>
+                        <p>A/C No: <span className="text-navy">{data.bankDetails?.accountNo || 'XXXXXXXXXXXXXX'}</span></p>
+                        <p>IFSC: <span className="text-navy">{data.bankDetails?.ifsc || 'ICIC000XXXX'}</span></p>
+                        <p>Branch: <span className="text-navy">{data.bankDetails?.branch || 'MAIN BRANCH'}</span></p>
                     </div>
                     <div className="pt-6 border-t border-gray-100 flex items-center space-x-4">
                         <div className="w-16 h-16 bg-gray-50 border border-gray-100 flex items-center justify-center text-[8px] font-bold text-gray-300">UPI QR</div>
