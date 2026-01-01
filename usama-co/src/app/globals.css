@@ -8,7 +8,7 @@
   --navy: #0f172a;
   --navy-light: #1e293b;
 
-  /* Theme variables for Tailwind 4 */
+  /* Tailwind 4 Theme Overrides Mapping */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-gold: var(--gold);
