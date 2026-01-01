@@ -9,6 +9,7 @@ import Link from 'next/link';
 export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const router = useRouter();
@@ -80,7 +81,7 @@ export default function LoginPage() {
 
                         <div className="space-y-4">
                             <div className="group">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-navy/40 mb-2 block group-focus-within:text-gold transition-colors">Email Identity</label>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-navy/70 mb-2 block group-focus-within:text-gold transition-colors">Email Identity</label>
                                 <div className="relative">
                                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-gold transition-colors" />
                                     <input
@@ -94,18 +95,26 @@ export default function LoginPage() {
                                 </div>
                             </div>
                             <div className="group">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-navy/40 mb-2 block group-focus-within:text-gold transition-colors">Access Key</label>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-navy/70 mb-2 block group-focus-within:text-gold transition-colors">Access Key</label>
                                 <div className="relative">
                                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-gold transition-colors" />
                                     <input
-                                        type="password"
+                                        type={showPassword ? "text" : "password"}
                                         required
-                                        className="w-full pl-12 pr-4 py-4 bg-gray-50 border-none outline-none focus:ring-1 focus:ring-gold/30 text-sm transition-all"
+                                        className="w-full pl-12 pr-12 py-4 bg-gray-50 border-none outline-none focus:ring-1 focus:ring-gold/30 text-sm transition-all"
                                         placeholder="••••••••"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-navy/30 hover:text-gold transition-colors"
+                                    >
+                                        {showPassword ? "HIDE" : "SHOW"}
+                                    </button>
                                 </div>
+                                <p className="mt-2 text-[9px] text-gray-400 font-medium">Hint: admin@usamaco.com / admin123</p>
                             </div>
                         </div>
 
