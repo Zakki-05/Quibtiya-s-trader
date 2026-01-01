@@ -7,9 +7,8 @@
   --gold-dark: #a68442;
   --navy: #0f172a;
   --navy-light: #1e293b;
-}
 
-@theme inline {
+  /* Theme variables for Tailwind 4 */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-gold: var(--gold);
@@ -64,6 +63,7 @@ body {
 .text-gradient {
   background: linear-gradient(135deg, var(--gold), var(--gold-dark));
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
